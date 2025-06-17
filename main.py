@@ -21,13 +21,13 @@ app = FastAPI(
           status_code=status.HTTP_201_CREATED)
 def create_author_endpoint(author: schemas.AuthorCreate,
                            db: Session = Depends(get_db)):
-    db_author = crud.get_author_by_name(db, name=author.name)
-    if db_author:
+    db_author = crud.create_author(db=db, author=author)
+    if db_author is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Author with this name already exists"
         )
-    return crud.create_author(db=db, author=author)
+    return db_author
 
 @app.get("/authors/", response_model=List[schemas.Author])
 def read_authors_endpoint(skip: int = 0,
