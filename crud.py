@@ -21,6 +21,10 @@ def get_authors(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_author(db: Session, author: schemas.AuthorCreate):
+    existing_author = get_author_by_name(db, name=author.name)
+    if existing_author:
+                return None
+        
     db_author = models.Author(name=author.name, bio=author.bio)
     db.add(db_author)
     db.commit()
