@@ -12,7 +12,7 @@ def get_author(db: Session, author_id: int):
 
 def get_author_by_name(db: Session, name: str):
     search_name_lower = name.lower()
-    result = db.query(models.Author).filter(models.Author.name == search_name_lower).first()
+    result = db.query(models.Author).filter(func.lower(models.Author.name) == search_name_lower).first()
     return result
 
 
