@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import date
 from typing import List, Optional
 
 
 class BookBase(BaseModel):
-    title: str
+    title: str = Field(..., min_length=1)
     summary: Optional[str] = None
     publication_date: date
 
@@ -19,7 +19,7 @@ class Book(BookBase):
         from_attributes = True
 
 class AuthorBase(BaseModel):
-    name: str
+    name: str = Field(..., min_length=1)
     bio: Optional[str] = None
 
 class AuthorCreate(AuthorBase):
@@ -27,7 +27,7 @@ class AuthorCreate(AuthorBase):
 
 class Author(AuthorBase):
     id: int
-    books: List[Book] = []
+    books: List[Book] = Field(default_factory=list)
 
     class Config:
         from_attributes = True
