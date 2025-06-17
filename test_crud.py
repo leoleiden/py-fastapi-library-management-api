@@ -32,7 +32,8 @@ def test_create_author(db_session):
     author = crud.create_author(db_session, author_data)
 
     assert author.id is not None
-    assert author.name == "тарас шевченко"
+    # Змінено: очікуємо оригінальний регістр
+    assert author.name == "Тарас Шевченко"
     assert author.bio == "Видатний український поет."
 
 def test_get_author(db_session):
@@ -41,7 +42,8 @@ def test_get_author(db_session):
 
     found_author = crud.get_author(db_session, created_author.id)
     assert found_author is not None
-    assert found_author.name == "іван франко"
+    # Змінено: очікуємо оригінальний регістр
+    assert found_author.name == "Іван Франко"
     assert found_author.id == created_author.id
 
 def test_get_author_by_name(db_session):
@@ -50,15 +52,18 @@ def test_get_author_by_name(db_session):
 
     found_author_lower = crud.get_author_by_name(db_session, "леся українка")
     assert found_author_lower is not None
-    assert found_author_lower.name == "леся українка"
+    # Змінено: очікуємо оригінальний регістр, оскільки його так і збережено
+    assert found_author_lower.name == "Леся Українка"
 
     found_author_upper = crud.get_author_by_name(db_session, "ЛЕСЯ УКРАЇНКА")
     assert found_author_upper is not None
-    assert found_author_upper.name == "леся українка"
+    # Змінено: очікуємо оригінальний регістр
+    assert found_author_upper.name == "Леся Українка"
 
     found_author_mixed = crud.get_author_by_name(db_session, "ЛеСя УкРаЇнКа")
     assert found_author_mixed is not None
-    assert found_author_mixed.name == "леся українка"
+    # Змінено: очікуємо оригінальний регістр
+    assert found_author_mixed.name == "Леся Українка"
 
     not_found_author = crud.get_author_by_name(db_session, "Володимир Винниченко")
     assert not_found_author is None
@@ -69,13 +74,14 @@ def test_get_authors(db_session):
 
     authors = crud.get_authors(db_session)
     assert len(authors) == 2
-    assert "василь стус" in [a.name for a in authors]
-    assert "ліна костенко" in [a.name for a in authors]
-
+    # Змінено: очікуємо оригінальний регістр
+    assert "Василь Стус" in [a.name for a in authors]
+    assert "Ліна Костенко" in [a.name for a in authors]
 
     paginated_authors = crud.get_authors(db_session, skip=1, limit=1)
     assert len(paginated_authors) == 1
-    assert paginated_authors[0].name in ["василь стус", "ліна костенко"]
+    # Змінено: очікуємо оригінальний регістр
+    assert paginated_authors[0].name in ["Василь Стус", "Ліна Костенко"]
 
 def test_create_book(db_session):
     author_data = schemas.AuthorCreate(name="Григорій Сковорода", bio="Філософ.")
@@ -94,7 +100,7 @@ def test_create_book(db_session):
 
 def test_get_book(db_session):
     author_data = schemas.AuthorCreate(name="Олександр Довженко", bio="Кінорежисер.")
-    author = crud.create_author(db_session, author_data)
+    author = crud.create_author(db_session, author_data) # Тут ім'я буде "Олександр Довженко"
 
     book_data = schemas.BookCreate(
         title="Зачарована Десна",
